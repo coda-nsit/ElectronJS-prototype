@@ -1,9 +1,11 @@
 
+const { dialog } = require("electron");
 const electron = require("electron");
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
 const path = require("path");
 const url = require("url");
+const ipc = electron.ipcMain;
 
 // 1. reference to the window
 // 2. create the window
@@ -50,4 +52,12 @@ app.on("activate", () => {
     if (win === null) {
         createWindow();
     }
+})
+
+ipc.on("open-error-dialog", (event) => {
+    // get message from index.js
+    dialog.showErrorBox("An error happened", "Demo of error message");
+    
+    // send message to the renderer process i.e. index.js
+    event.sender.send("opened-error-dialog", "main process opened the diaglog");
 })
